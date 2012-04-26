@@ -1032,18 +1032,22 @@ class Template  {
 	 * @param <type> $timezone
 	 * @return <type>
 	 */
-	public function pref_date($gmdate, $format = false, $timezone = false){
+	public function pref_date($gmdate, $format = false, $timezone = false, $default = 'Empty'){
+		
+		if(!Date::isEmptyDate($gmdate)){
 
-		$timezone	= $timezone ? $timezone : app()->config('timezone');
-		$format		= $format ? $format : app()->config('date_format');
+			$timezone	= $timezone ? $timezone : app()->config('timezone');
+			$format		= $format ? $format : app()->config('date_format');
 
-		// try to get a user timezone setting
-		if($user_id = session()->getInt('user_id')){
-			$timezone = app()->settings->getConfig('timezone', $user_id);
+			// try to get a user timezone setting
+			if($user_id = session()->getInt('user_id')){
+				$timezone = app()->settings->getConfig('timezone', $user_id);
+			}
+
+			return Date::tzFormatDate($gmdate, $format, $timezone);
+		} else {
+			return $default;
 		}
-
-		return Date::tzFormatDate($gmdate, $format, $timezone);
-
 	}
 
 
